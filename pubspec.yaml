@@ -1,0 +1,82 @@
+name: slibro
+description: A new Flutter project.
+
+publish_to: "none"
+version: 2.1.0+18
+
+environment:
+  sdk: ">=2.16.2 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  appwrite: ^4.0.2
+  flutter_quill: ^4.1.3
+  path_provider: ^2.0.9
+  shared_preferences: ^2.0.14
+  google_nav_bar: ^5.0.6
+  tuple: ^2.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^1.0.0
+
+flutter:
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/
+  #   - images/a_dot_ham.jpeg
+
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/assets-and-images/#resolution-aware.
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/assets-and-images/#from-packages
+
+  # To add custom fonts to your application, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  fonts:
+    - family: PierSans
+      fonts:
+        - asset: fonts/pier-sans/PierSans-Light.otf
+          weight: 400
+        - asset: fonts/pier-sans/PierSans-Regular.otf
+          weight: 500
+        - asset: fonts/pier-sans/PierSans-Medium.otf
+          weight: 600
+        - asset: fonts/pier-sans/PierSans-Bold.otf
+          weight: 700
+        - asset: fonts/pier-sans/PierSans-Black.otf
+          weight: 800
+
+    - family: Poppins
+      fonts:
+        - asset: fonts/poppins/Poppins-ExtraLight.ttf
+          weight: 300
+
+        - asset: fonts/poppins/Poppins-Light.ttf
+          weight: 400
+        - asset: fonts/poppins/Poppins-Regular.ttf
+          weight: 500
+        - asset: fonts/poppins/Poppins-Medium.ttf
+          weight: 600
+        - asset: fonts/poppins/Poppins-Bold.ttf
+          weight: 700
+        - asset: fonts/poppins/Poppins-SemiBold.ttf
+          weight: 800
+        - asset: fonts/poppins/Poppins-ExtraBold.ttf
+          weight: 900
+
+    - family: Baskervville
+      fonts:
+        - asset: fonts/baskervville/Baskervville-Regular.ttf
+
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/custom-fonts/#from-packages
