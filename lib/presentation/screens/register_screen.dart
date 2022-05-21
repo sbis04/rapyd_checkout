@@ -12,6 +12,8 @@ import 'package:slibro/presentation/screens/login_screen.dart';
 import 'package:slibro/presentation/screens/splash_screen.dart';
 import 'package:slibro/utils/validators.dart';
 
+import '../../utils/rapyd_client.dart';
+
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
 
@@ -21,6 +23,8 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _registerFormKey = GlobalKey<FormState>();
+
+  late final RapydClient _rapydClient;
 
   late final TextEditingController _userNameTextController;
   late final TextEditingController _emailTextController;
@@ -37,6 +41,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   void initState() {
     super.initState();
+    _rapydClient = RapydClient();
+
     _userNameTextController = TextEditingController();
     _emailTextController = TextEditingController();
     _passwordTextController = TextEditingController();
@@ -267,8 +273,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           _isAuthenticating = true;
                         });
 
+                        // Create a new user account in Appwrite
                         Account account = Account(client);
-                        User newUser = await account
+                        await account
                             .create(
                           userId: 'unique()',
                           email: _emailTextController.text,
@@ -279,29 +286,52 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           log(error.response.toString());
                         });
 
-                        log('User account created successfully: ${newUser.$id}');
-
-                        final prefs = await SharedPreferences.getInstance();
-                        await prefs.setString(
-                          authEmailSharedPrefKey,
-                          _emailTextController.text,
-                        );
-                        await prefs.setString(
-                          authPasswordSharedPrefKey,
-                          _passwordTextController.text,
+                        // Creating a new Rapyd customer
+                        final customer = await _rapydClient.createNewCustomer(
+                          email: _emailTextController.text,
+                          name: _userNameTextController.text,
                         );
 
-                        setState(() {
-                          _isAuthenticating = false;
-                        });
+                        if (customer != null) {
+                          log('CUSTOMER ID: ${customer.data.id}');
 
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (context) => GreetScreen(
-                              user: newUser,
+                          // Logging in the newly created user
+                          final Session session = await account.createSession(
+                            email: _emailTextController.text,
+                            password: _passwordTextController.text,
+                          );
+
+                          // Storing the Rapyd customer ID
+                          User newUser = await account.updatePrefs(
+                            prefs: {'customer_id': customer.data.id},
+                          );
+
+                          log('User account created successfully: ${newUser.$id}');
+
+                          // Storing some details locally for auto login
+                          // when the user comes back to the app next time
+                          final prefs = await SharedPreferences.getInstance();
+                          await prefs.setString(
+                            authEmailSharedPrefKey,
+                            _emailTextController.text,
+                          );
+                          await prefs.setString(
+                            authPasswordSharedPrefKey,
+                            _passwordTextController.text,
+                          );
+
+                          setState(() {
+                            _isAuthenticating = false;
+                          });
+
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) => GreetScreen(
+                                user: newUser,
+                              ),
                             ),
-                          ),
-                        );
+                          );
+                        }
                       }
                     },
                     child: _isAuthenticating
