@@ -2,6 +2,7 @@ import 'package:appwrite/appwrite.dart';
 import 'package:flutter/material.dart';
 import 'package:slibro/application/res/palette.dart';
 import 'package:slibro/presentation/screens/login_screen.dart';
+import 'package:slibro/presentation/screens/payment/payment_complete_page.dart';
 import 'package:slibro/presentation/screens/splash_screen.dart';
 import 'package:slibro/secrets.dart';
 
@@ -75,6 +76,7 @@ class MyApp extends StatelessWidget {
       ),
       home: const SplashScreen(),
       // home: const DashboardPage(),
+      // home: const PaymentCompletePage(paymentStatus: 'error'),
     );
   }
 }
