@@ -5,6 +5,7 @@
 
 // LOCAL
 const storiesCollectionId = '627a37fd6c3524920a69';
+const publishedCollectionId = '62892752d95ec1e2da50';
 const chaptersCollectionId = '627be90a0265ba0dc2ae';
 const filesBucketId = '627a52c3c13dedb31cbb';
 const coversBucketId = '62879517575fa2f84650';
