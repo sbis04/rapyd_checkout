@@ -18,6 +18,11 @@ dependencies:
   tuple: ^2.0.0
   image_cropper: ^2.0.3
   image_picker: ^0.8.5+3
+  http: ^0.13.4
+  convert: ^3.0.1
+  crypto: ^3.0.2
+  webview_flutter_plus: ^0.3.0+2
+  rive: ^0.8.4
 
 dev_dependencies:
   flutter_test:
@@ -30,7 +35,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
-  #   - images/a_dot_ham.jpeg
+    - assets/checkout_toolkit/
+    - assets/rive/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
