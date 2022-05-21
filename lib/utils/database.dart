@@ -38,22 +38,58 @@ class DatabaseClient {
     return newStory;
   }
 
-  Future<Map<String, dynamic>> getStory({
+  Future<Document> addStoryToPublished({
     required User user,
+    required String storyName,
+    required String storyAuthor,
+    required String storyDescription,
+    required bool isShort,
+    required List<String> chapters,
+    required String coverImageId,
   }) async {
-    final storyData = await database
-        .getDocument(
-      collectionId: storiesCollectionId,
-      documentId: user.$id,
+    final Map<String, dynamic> data = {
+      'uid': user.$id,
+      'title': storyName,
+      'description': storyDescription,
+      'author': storyAuthor,
+      'is_short': isShort,
+      'chapters': chapters,
+      'cover': coverImageId,
+    };
+
+    final Document publishedStory = await database
+        .createDocument(
+      collectionId: publishedCollectionId,
+      documentId: 'unique()',
+      data: data,
     )
         .catchError((e) {
       log(
-        'Error retrieving doc: ${e.toString()}',
+        'Error creating doc: ${e.toString()}',
       );
     });
 
-    return storyData.data;
+    log('Published doc created successfully: ${publishedStory.$id}');
+
+    return publishedStory;
   }
+
+  // Future<Map<String, dynamic>> getStory({
+  //   required User user,
+  // }) async {
+  //   final storyData = await database
+  //       .getDocument(
+  //     collectionId: storiesCollectionId,
+  //     documentId: user.$id,
+  //   )
+  //       .catchError((e) {
+  //     log(
+  //       'Error retrieving doc: ${e.toString()}',
+  //     );
+  //   });
+
+  //   return storyData.data;
+  // }
 
   Future<Document?> addStoryFile({
     required String documentID,
@@ -179,7 +215,7 @@ class DatabaseClient {
     return updatedStory;
   }
 
-  Future<DocumentList> getPublishedStories() async {
+  Future<DocumentList> getStories() async {
     final DocumentList pubStories = await database.listDocuments(
       collectionId: storiesCollectionId,
     );
