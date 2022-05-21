@@ -110,10 +110,11 @@ class _ReadingScreenState extends State<ReadingScreen> {
                     data: Theme.of(context).copyWith(
                       textSelectionTheme:
                           TextSelectionTheme.of(context).copyWith(
-                        cursorColor: Colors.black,
+                        cursorColor: Colors.white,
                       ),
                     ),
                     child: quill.QuillEditor(
+                      enableInteractiveSelection: false,
                       autoFocus: false,
                       scrollable: true,
                       focusNode: _storyContentFocusNode,

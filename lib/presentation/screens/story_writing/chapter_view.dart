@@ -3,11 +3,13 @@ import 'dart:developer';
 import 'package:appwrite/models.dart';
 import 'package:flutter/material.dart';
 import 'package:slibro/application/res/palette.dart';
-import 'package:slibro/presentation/screens/srory_reading/reading_view.dart';
+import 'package:slibro/presentation/screens/story_reading/reading_view.dart';
 import 'package:slibro/presentation/screens/story_writing/chapter_description.dart';
 import 'package:slibro/presentation/screens/story_writing/writing_view.dart';
 import 'package:slibro/utils/database.dart';
 import 'package:slibro/utils/storage.dart';
+
+import '../publishing/publishing_page.dart';
 
 class ChapterViewScreen extends StatefulWidget {
   const ChapterViewScreen({
@@ -49,7 +51,6 @@ class _ChapterViewScreenState extends State<ChapterViewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    log(widget.story.data.toString());
     // log(widget.story.data.toString());
     return GestureDetector(
       onTap: () {},
@@ -120,47 +121,55 @@ class _ChapterViewScreenState extends State<ChapterViewScreen> {
                         padding: const EdgeInsets.only(right: 16.0),
                         child: TextButton(
                           onPressed: () async {
-                            showDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (context) => Dialog(
-                                backgroundColor: Palette.greyDark,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 24.0,
-                                    vertical: 30,
-                                  ),
-                                  child: SizedBox(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: const [
-                                        Text(
-                                          'Publishing...',
-                                          style: TextStyle(
-                                            color: Palette.white,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 30,
-                                          width: 30,
-                                          child: CircularProgressIndicator(
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                              Palette.white,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => PublishingPage(
+                                  story: widget.story,
+                                  user: widget.user,
                                 ),
                               ),
                             );
-                            await _databaseClient.publishStory(
-                                storyId: widget.story.$id);
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop();
+                            // showDialog(
+                            //   context: context,
+                            //   barrierDismissible: false,
+                            //   builder: (context) => Dialog(
+                            //     backgroundColor: Palette.greyDark,
+                            //     child: Padding(
+                            //       padding: const EdgeInsets.symmetric(
+                            //         horizontal: 24.0,
+                            //         vertical: 30,
+                            //       ),
+                            //       child: SizedBox(
+                            //         child: Row(
+                            //           mainAxisAlignment:
+                            //               MainAxisAlignment.spaceBetween,
+                            //           children: const [
+                            //             Text(
+                            //               'Publishing...',
+                            //               style: TextStyle(
+                            //                 color: Palette.white,
+                            //               ),
+                            //             ),
+                            //             SizedBox(
+                            //               height: 30,
+                            //               width: 30,
+                            //               child: CircularProgressIndicator(
+                            //                 valueColor:
+                            //                     AlwaysStoppedAnimation<Color>(
+                            //                   Palette.white,
+                            //                 ),
+                            //               ),
+                            //             ),
+                            //           ],
+                            //         ),
+                            //       ),
+                            //     ),
+                            //   ),
+                            // );
+                            // await _databaseClient.publishStory(
+                            //     storyId: widget.story.$id);
+                            // Navigator.of(context).pop();
+                            // Navigator.of(context).pop();
                           },
                           child: const Text(
                             'Publish',
