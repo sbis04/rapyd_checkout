@@ -2,9 +2,12 @@
     package="com.souvikbiswas.slibro">
    <uses-permission android:name="android.permission.INTERNET" />
    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+   <uses-permission android:name="android.permission.WAKE_LOCK" />
    <application
         android:label="slibro"
-        android:icon="@mipmap/ic_launcher_slibro">
+        android:name="${applicationName}"
+        android:icon="@mipmap/ic_launcher_slibro"
+        android:usesCleartextTraffic="true">
         <activity
           android:name="com.yalantis.ucrop.UCropActivity"
           android:screenOrientation="portrait"
