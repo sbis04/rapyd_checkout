@@ -10,6 +10,7 @@ import 'package:slibro/application/res/appwrite_const.dart';
 import 'package:slibro/application/res/palette.dart';
 import 'package:slibro/main.dart';
 import 'package:slibro/presentation/screens/login_screen.dart';
+import 'package:slibro/presentation/screens/main_views/cart_view.dart';
 import 'package:slibro/presentation/screens/main_views/my_profile.dart';
 import 'package:slibro/presentation/screens/story_writing/story_length.dart';
 
@@ -70,8 +71,9 @@ class _DashboardPageState extends State<DashboardPage> {
                     user: widget.user,
                   )
                 : _selectedIndex == 2
-                    // TODO: Add cart screen here
-                    ? Container()
+                    ? CartView(
+                        user: widget.user,
+                      )
                     : MyProfileView(
                         user: widget.user,
                       ),
