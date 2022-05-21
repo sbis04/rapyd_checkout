@@ -22,7 +22,7 @@ class _MyStoryViewState extends State<MyStoryView> {
 
   _getStories() async {
     List<Document> publishedStories = [];
-    final stories = await _databaseClient.getPublishedStories();
+    final stories = await _databaseClient.getStories();
 
     for (int i = 0; i < stories.documents.length; i++) {
       final storyData = stories.documents[i].data;
