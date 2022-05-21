@@ -16,6 +16,8 @@ dependencies:
   shared_preferences: ^2.0.14
   google_nav_bar: ^5.0.6
   tuple: ^2.0.0
+  image_cropper: ^2.0.3
+  image_picker: ^0.8.5+3
 
 dev_dependencies:
   flutter_test:
