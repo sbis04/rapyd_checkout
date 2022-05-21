@@ -80,6 +80,30 @@ class DatabaseClient {
     return updatedStory;
   }
 
+  Future<Document> uploadPublishingDetails({
+    required String documentID,
+    required String coverImageID,
+    required String storyDescription,
+    required bool isPaid,
+    double? price,
+  }) async {
+    final Document publishedStory = await database.updateDocument(
+      collectionId: storiesCollectionId,
+      documentId: documentID,
+      data: {
+        'description': storyDescription,
+        'cover': coverImageID,
+        'paid': isPaid,
+        'price': price,
+        'published': true,
+      },
+    );
+
+    log('Updated document successfully, ID: ${publishedStory.$id}');
+
+    return publishedStory;
+  }
+
   Future<Document> addChapterFile({
     required String documentID,
     required String fileID,
