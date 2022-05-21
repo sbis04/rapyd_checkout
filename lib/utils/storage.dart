@@ -34,6 +34,21 @@ class StorageClient {
     return file;
   }
 
+  Future<String> getJSONFile({required String fileID}) async {
+    Uint8List rawFile = await storage
+        .getFileDownload(
+      bucketId: filesBucketId,
+      fileId: fileID,
+    )
+        .catchError((e) {
+      log('Error retrieving file: ${e.toString()}');
+    });
+
+    final jsonString = utf8.decode(rawFile);
+
+    return jsonString;
+  }
+
   Future<File> storeCoverImage({
     required String filePath,
     required String fileName,
@@ -58,18 +73,16 @@ class StorageClient {
     return image;
   }
 
-  Future<String> getJSONFile({required String fileID}) async {
-    Uint8List rawFile = await storage
+  Future<Uint8List> getCoverImage({required String imageID}) async {
+    Uint8List rawImageFile = await storage
         .getFileDownload(
-      bucketId: filesBucketId,
-      fileId: fileID,
+      bucketId: coversBucketId,
+      fileId: imageID,
     )
         .catchError((e) {
-      log('Error retrieving file: ${e.toString()}');
+      log('Error retrieving cover image: ${e.toString()}');
     });
 
-    final jsonString = utf8.decode(rawFile);
-
-    return jsonString;
+    return rawImageFile;
   }
 }
