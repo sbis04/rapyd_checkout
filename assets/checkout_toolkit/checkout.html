@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Rapyd Checkout Toolkit</title>
+</head>
+
+<body>
+    <div>
+        <div class="container">
+
+            <!-- Feedback -->
+            <div class="row justify-content-center">
+                <div class="col text-center my-4" style="display: none" id="feedback">
+                    <img src="" id="image" alt="" height="120" class="mt-2">
+                    <h3 id="title" class="my-4"></h3>
+                    <p id="message"></p>
+                    <a role="button" class="btn btn-custom mt-2" href="" id="action"></a>
+                </div>
+            </div>
+
+            <!-- iframe -->
+            <div class="row justify-content-center">
+                <div class="col" style="max-width: 500px;" id="rapyd-checkout"></div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row justify-content-center text-center border-top py-2">
+                <span>&copy; Slibro, 2022</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- code to display the iframe -->
+    <script src="https://sandboxcheckouttoolkit.rapyd.net"></script>
+    <script>
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const checkoutId = urlParams.get('id')
+        // console.log(checkoutId);
+        window.onload = function () {
+            let checkout = new RapydCheckoutToolkit({
+                pay_button_text: "Pay Now",
+                pay_button_color: "#030303",
+                id: checkoutId, // your checkout page id goes here
+                style: {
+                    submit: {
+                        base: {
+                            color: "white"
+                        }
+                    }
+                }
+            });
+            checkout.displayCheckout();
+        }
+        window.addEventListener('onCheckoutPaymentSuccess', function (event) {
+            console.log(event.detail);
+            JavascriptChannel.postMessage("success");
+            // feedback(event);
+        });
+        window.addEventListener('onCheckoutFailure', function (event) {
+            console.log(event.detail.error);
+            JavascriptChannel.postMessage("failed");
+            // feedback(event);
+        });
+        window.addEventListener('onCheckoutPaymentFailure', (event)=> {
+            console.log(event.detail.error);
+            JavascriptChannel.postMessage("failed");
+            // feedback(event);
+        })
+
+
+        // display information to the user
+        function feedback(event){
+            if (event.detail.error){
+                document.getElementById('title').textContent = "Whoops!";
+                document.getElementById('message').innerHTML = "We cannot process your payment:<br/>" + 
+                    event.detail.error;
+                document.getElementById('action').textContent = "Try again";
+            }
+            else {
+                JavascriptChannel.postMessage("Success");
+                // document.getElementById('title').textContent = "Success!";
+                // document.getElementById('message').innerHTML = "Thank you! Your product is on its way!" + 
+                //     "<br>" +
+                //     "Order: " + event.detail.metadata.sales_order;
+                // document.getElementById('image').src = "img/logo.svg";
+                // document.getElementById('action').textContent = "Home";
+            }
+
+            document.getElementById('feedback').style.display = "block";
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+</body>
+</html>
