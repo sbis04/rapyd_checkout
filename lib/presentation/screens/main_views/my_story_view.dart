@@ -134,121 +134,125 @@ class _MyStoryViewState extends State<MyStoryView> {
                               // final bool isPaid = storyData['paid'];
                               // final double? price = storyData['price'];
 
-                              return InkWell(
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => ChapterViewScreen(
-                                        story: retrievedStories[index],
-                                        user: widget.user,
-                                        isPurchased: true,
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 16.0),
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => ChapterViewScreen(
+                                          story: retrievedStories[index],
+                                          user: widget.user,
+                                          isPurchased: true,
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                },
-                                child: SizedBox(
-                                  width: 210,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        height: 210 * 1.5,
-                                        width: 210,
-                                        decoration: BoxDecoration(
-                                          color: Palette.greyLight,
-                                          borderRadius:
-                                              BorderRadius.circular(16),
-                                          border: Border.all(
+                                    );
+                                  },
+                                  child: SizedBox(
+                                    width: 210,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          height: 210 * 1.5,
+                                          width: 210,
+                                          decoration: BoxDecoration(
+                                            color: Palette.greyLight,
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                            border: Border.all(
+                                              color: Palette.greyDark,
+                                              width: 2,
+                                            ),
+                                          ),
+                                          child: FutureBuilder<Uint8List>(
+                                            future:
+                                                _storageClient.getCoverImage(
+                                              imageID: coverId,
+                                            ),
+                                            builder: (context, snapshot) {
+                                              return snapshot.hasData &&
+                                                      snapshot.data != null
+                                                  ? ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              16),
+                                                      child: Image.memory(
+                                                        snapshot.data!,
+                                                      ),
+                                                    )
+                                                  : const SizedBox();
+                                            },
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          title,
+                                          // 'Checking if a long story title is present',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontSize: 17,
+                                            letterSpacing: 0,
+                                            color: Palette.black,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Written by $author',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
                                             color: Palette.greyDark,
-                                            width: 2,
+                                            fontSize: 12,
                                           ),
                                         ),
-                                        child: FutureBuilder<Uint8List>(
-                                          future: _storageClient.getCoverImage(
-                                            imageID: coverId,
-                                          ),
-                                          builder: (context, snapshot) {
-                                            return snapshot.hasData &&
-                                                    snapshot.data != null
-                                                ? ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            16),
-                                                    child: Image.memory(
-                                                      snapshot.data!,
-                                                    ),
-                                                  )
-                                                : const SizedBox();
-                                          },
-                                        ),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        title,
-                                        // 'Checking if a long story title is present',
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                          fontSize: 17,
-                                          letterSpacing: 0,
-                                          color: Palette.black,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                      Text(
-                                        'Written by $author',
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                          color: Palette.greyDark,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
+                                  // const SizedBox(width: 16),
+                                  // Expanded(
+                                  //   child: Column(
+                                  //     crossAxisAlignment:
+                                  //         CrossAxisAlignment.start,
+                                  //     children: [
+                                  //       Text(
+                                  //         title,
+                                  //         // 'Checking if a long story title is present',
+                                  //         maxLines: 2,
+                                  //         overflow: TextOverflow.ellipsis,
+                                  //         style: const TextStyle(
+                                  //           fontSize: 18,
+                                  //           color: Palette.black,
+                                  //         ),
+                                  //       ),
+                                  //       const SizedBox(height: 4.0),
+                                  //       Text(
+                                  //         'Written by $author',
+                                  //         maxLines: 1,
+                                  //         overflow: TextOverflow.ellipsis,
+                                  //         style: const TextStyle(
+                                  //           color: Palette.greyMedium,
+                                  //           fontSize: 12,
+                                  //         ),
+                                  //       ),
+                                  //       const SizedBox(height: 4.0),
+                                  //       Text(
+                                  //         description,
+                                  //         maxLines: 2,
+                                  //         overflow: TextOverflow.ellipsis,
+                                  //         style: const TextStyle(
+                                  //           color: Palette.greyDark,
+                                  //           fontSize: 12,
+                                  //           letterSpacing: 0,
+                                  //         ),
+                                  //       ),
+                                  //     ],
+                                  //   ),
+                                  // )
                                 ),
-                                // const SizedBox(width: 16),
-                                // Expanded(
-                                //   child: Column(
-                                //     crossAxisAlignment:
-                                //         CrossAxisAlignment.start,
-                                //     children: [
-                                //       Text(
-                                //         title,
-                                //         // 'Checking if a long story title is present',
-                                //         maxLines: 2,
-                                //         overflow: TextOverflow.ellipsis,
-                                //         style: const TextStyle(
-                                //           fontSize: 18,
-                                //           color: Palette.black,
-                                //         ),
-                                //       ),
-                                //       const SizedBox(height: 4.0),
-                                //       Text(
-                                //         'Written by $author',
-                                //         maxLines: 1,
-                                //         overflow: TextOverflow.ellipsis,
-                                //         style: const TextStyle(
-                                //           color: Palette.greyMedium,
-                                //           fontSize: 12,
-                                //         ),
-                                //       ),
-                                //       const SizedBox(height: 4.0),
-                                //       Text(
-                                //         description,
-                                //         maxLines: 2,
-                                //         overflow: TextOverflow.ellipsis,
-                                //         style: const TextStyle(
-                                //           color: Palette.greyDark,
-                                //           fontSize: 12,
-                                //           letterSpacing: 0,
-                                //         ),
-                                //       ),
-                                //     ],
-                                //   ),
-                                // )
                               );
                             },
                           ),
