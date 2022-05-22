@@ -59,7 +59,7 @@ class DatabaseClient {
 
     final Document publishedStory = await database
         .createDocument(
-      collectionId: publishedCollectionId,
+      collectionId: purchasedCollectionId,
       documentId: 'unique()',
       data: data,
     )
@@ -223,6 +223,14 @@ class DatabaseClient {
     return pubStories;
   }
 
+  Future<DocumentList> getPurchasedStories() async {
+    final DocumentList pubStories = await database.listDocuments(
+      collectionId: purchasedCollectionId,
+    );
+
+    return pubStories;
+  }
+
   Future<List<Document>> getChapters({required List<String> chapterIds}) async {
     List<Document> chapters = [];
 
@@ -264,5 +272,12 @@ class DatabaseClient {
     log('Unpublished story successfully, ID: ${updatedStory.$id}');
 
     return updatedStory;
+  }
+
+  Future<void> deleteStory({required String storyId}) async {
+    await database.deleteDocument(
+      collectionId: storiesCollectionId,
+      documentId: storyId,
+    );
   }
 }
