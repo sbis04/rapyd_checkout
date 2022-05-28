@@ -24,6 +24,13 @@ class StoryLengthScreen extends StatelessWidget {
     );
     return Scaffold(
       backgroundColor: Palette.white,
+      appBar: AppBar(
+        backgroundColor: Palette.white,
+        iconTheme: const IconThemeData(
+          color: Palette.black,
+        ),
+        elevation: 0,
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -113,7 +120,7 @@ class StoryLengthScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 100),
             ],
           ),
         ),

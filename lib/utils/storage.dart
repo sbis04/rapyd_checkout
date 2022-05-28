@@ -48,4 +48,41 @@ class StorageClient {
 
     return jsonString;
   }
+
+  Future<File> storeCoverImage({
+    required String filePath,
+    required String fileName,
+  }) async {
+    File image = await storage
+        .createFile(
+      bucketId: coversBucketId,
+      fileId: 'unique()',
+      file: InputFile(
+        path: filePath,
+        filename: fileName,
+      ),
+    )
+        .catchError((e) {
+      log(
+        'Error storing cover image: ${e.toString()}',
+      );
+    });
+
+    log('Cover image successfully stored, ID: ${image.$id}');
+
+    return image;
+  }
+
+  Future<Uint8List> getCoverImage({required String imageID}) async {
+    Uint8List rawImageFile = await storage
+        .getFileDownload(
+      bucketId: coversBucketId,
+      fileId: imageID,
+    )
+        .catchError((e) {
+      log('Error retrieving cover image: ${e.toString()}');
+    });
+
+    return rawImageFile;
+  }
 }

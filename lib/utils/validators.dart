@@ -7,6 +7,22 @@ class Validators {
     return null;
   }
 
+  static String? validateDescription({required String? name}) {
+    if (name == null || name.isEmpty) {
+      return 'Description can\'t be empty';
+    }
+
+    return null;
+  }
+
+  static String? validatePrice({required String? name}) {
+    if (name == null || name.isEmpty) {
+      return 'Price can\'t be empty';
+    }
+
+    return null;
+  }
+
   static String? validateEmail({required String? email}) {
     RegExp emailRegExp = RegExp(
         r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$");

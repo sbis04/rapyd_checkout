@@ -3,21 +3,25 @@ import 'dart:developer';
 import 'package:appwrite/models.dart';
 import 'package:flutter/material.dart';
 import 'package:slibro/application/res/palette.dart';
-import 'package:slibro/presentation/screens/srory_reading/reading_view.dart';
+import 'package:slibro/presentation/screens/story_reading/reading_view.dart';
 import 'package:slibro/presentation/screens/story_writing/chapter_description.dart';
 import 'package:slibro/presentation/screens/story_writing/writing_view.dart';
 import 'package:slibro/utils/database.dart';
 import 'package:slibro/utils/storage.dart';
+
+import '../publishing/publishing_page.dart';
 
 class ChapterViewScreen extends StatefulWidget {
   const ChapterViewScreen({
     Key? key,
     required this.story,
     required this.user,
+    this.isPurchased = false,
   }) : super(key: key);
 
   final Document story;
   final User user;
+  final bool isPurchased;
 
   @override
   State<ChapterViewScreen> createState() => _ChapterViewScreenState();
@@ -49,7 +53,6 @@ class _ChapterViewScreenState extends State<ChapterViewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    log(widget.story.data.toString());
     // log(widget.story.data.toString());
     return GestureDetector(
       onTap: () {},
@@ -59,130 +62,147 @@ class _ChapterViewScreenState extends State<ChapterViewScreen> {
           elevation: 0,
           backgroundColor: Palette.black,
           actions: [
-            widget.user.$id == _storyData['uid']
-                ? _storyData['published']
-                    ? Padding(
-                        padding: const EdgeInsets.only(right: 16.0),
-                        child: TextButton(
-                          onPressed: () async {
-                            showDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (context) => Dialog(
-                                backgroundColor: Palette.greyDark,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 24.0,
-                                    vertical: 30,
-                                  ),
-                                  child: SizedBox(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: const [
-                                        Text(
-                                          'Unpublishing...',
-                                          style: TextStyle(
-                                            color: Palette.white,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 30,
-                                          width: 30,
-                                          child: CircularProgressIndicator(
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                              Palette.white,
+            widget.isPurchased
+                ? const SizedBox()
+                : widget.user.$id == _storyData['uid']
+                    ? _storyData['published']
+                        ? Padding(
+                            padding: const EdgeInsets.only(right: 16.0),
+                            child: TextButton(
+                              onPressed: () async {
+                                showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (context) => Dialog(
+                                    backgroundColor: Palette.greyDark,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 24.0,
+                                        vertical: 30,
+                                      ),
+                                      child: SizedBox(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: const [
+                                            Text(
+                                              'Unpublishing...',
+                                              style: TextStyle(
+                                                color: Palette.white,
+                                              ),
                                             ),
-                                          ),
+                                            SizedBox(
+                                              height: 30,
+                                              width: 30,
+                                              child: CircularProgressIndicator(
+                                                valueColor:
+                                                    AlwaysStoppedAnimation<
+                                                        Color>(
+                                                  Palette.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
+                                      ),
                                     ),
                                   ),
+                                );
+                                await _databaseClient.unpublishStory(
+                                    storyId: widget.story.$id);
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text(
+                                'Unpublish',
+                                style: TextStyle(
+                                  color: Colors.redAccent,
+                                  fontSize: 16,
                                 ),
                               ),
-                            );
-                            await _databaseClient.unpublishStory(
-                                storyId: widget.story.$id);
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text(
-                            'Unpublish',
-                            style: TextStyle(
-                              color: Colors.redAccent,
-                              fontSize: 16,
                             ),
-                          ),
-                        ),
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.only(right: 16.0),
-                        child: TextButton(
-                          onPressed: () async {
-                            showDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (context) => Dialog(
-                                backgroundColor: Palette.greyDark,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 24.0,
-                                    vertical: 30,
-                                  ),
-                                  child: SizedBox(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: const [
-                                        Text(
-                                          'Publishing...',
-                                          style: TextStyle(
-                                            color: Palette.white,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 30,
-                                          width: 30,
-                                          child: CircularProgressIndicator(
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                              Palette.white,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.only(right: 16.0),
+                            child: TextButton(
+                              onPressed: () async {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => PublishingPage(
+                                      story: widget.story,
+                                      user: widget.user,
                                     ),
                                   ),
+                                );
+                                // showDialog(
+                                //   context: context,
+                                //   barrierDismissible: false,
+                                //   builder: (context) => Dialog(
+                                //     backgroundColor: Palette.greyDark,
+                                //     child: Padding(
+                                //       padding: const EdgeInsets.symmetric(
+                                //         horizontal: 24.0,
+                                //         vertical: 30,
+                                //       ),
+                                //       child: SizedBox(
+                                //         child: Row(
+                                //           mainAxisAlignment:
+                                //               MainAxisAlignment.spaceBetween,
+                                //           children: const [
+                                //             Text(
+                                //               'Publishing...',
+                                //               style: TextStyle(
+                                //                 color: Palette.white,
+                                //               ),
+                                //             ),
+                                //             SizedBox(
+                                //               height: 30,
+                                //               width: 30,
+                                //               child: CircularProgressIndicator(
+                                //                 valueColor:
+                                //                     AlwaysStoppedAnimation<Color>(
+                                //                   Palette.white,
+                                //                 ),
+                                //               ),
+                                //             ),
+                                //           ],
+                                //         ),
+                                //       ),
+                                //     ),
+                                //   ),
+                                // );
+                                // await _databaseClient.publishStory(
+                                //     storyId: widget.story.$id);
+                                // Navigator.of(context).pop();
+                                // Navigator.of(context).pop();
+                              },
+                              child: const Text(
+                                'Publish',
+                                style: TextStyle(
+                                  color: Colors.greenAccent,
+                                  fontSize: 16,
                                 ),
                               ),
-                            );
-                            await _databaseClient.publishStory(
-                                storyId: widget.story.$id);
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text(
-                            'Publish',
-                            style: TextStyle(
-                              color: Colors.greenAccent,
-                              fontSize: 16,
                             ),
-                          ),
-                        ),
-                      )
-                : const SizedBox()
+                          )
+                    : const SizedBox()
           ],
         ),
         floatingActionButton: widget.user.$id == _storyData['uid']
-            ? FloatingActionButton(
-                backgroundColor: Colors.red.shade200,
-                onPressed: () {},
-                child: Icon(
-                  Icons.delete,
-                  color: Colors.redAccent.shade700,
-                ),
-              )
+            ? widget.isPurchased
+                ? const SizedBox()
+                : FloatingActionButton(
+                    backgroundColor: Colors.red.shade200,
+                    onPressed: () async {
+                      await _databaseClient.deleteStory(
+                          storyId: widget.story.$id);
+                      Navigator.of(context).pop(['delete']);
+                    },
+                    child: Icon(
+                      Icons.delete,
+                      color: Colors.redAccent.shade700,
+                    ),
+                  )
             : const SizedBox(),
         body: SafeArea(
           child: SingleChildScrollView(
@@ -305,81 +325,88 @@ class _ChapterViewScreenState extends State<ChapterViewScreen> {
                                         ],
                                       ),
                                       widget.user.$id == _storyData['uid']
-                                          ? IconButton(
-                                              onPressed: () async {
-                                                // log('tapped edit');
-                                                showDialog(
-                                                  context: context,
-                                                  barrierDismissible: false,
-                                                  builder: (context) => Dialog(
-                                                    backgroundColor:
-                                                        Palette.greyDark,
-                                                    child: Padding(
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                        horizontal: 24.0,
-                                                        vertical: 30,
-                                                      ),
-                                                      child: SizedBox(
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: const [
-                                                            Text(
-                                                              'Loading...',
-                                                              style: TextStyle(
-                                                                color: Palette
-                                                                    .white,
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                              height: 30,
-                                                              width: 30,
-                                                              child:
-                                                                  CircularProgressIndicator(
-                                                                valueColor:
-                                                                    AlwaysStoppedAnimation<
-                                                                        Color>(
-                                                                  Palette.white,
+                                          ? widget.isPurchased
+                                              ? const SizedBox()
+                                              : IconButton(
+                                                  onPressed: () async {
+                                                    // log('tapped edit');
+                                                    showDialog(
+                                                      context: context,
+                                                      barrierDismissible: false,
+                                                      builder: (context) =>
+                                                          Dialog(
+                                                        backgroundColor:
+                                                            Palette.greyDark,
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                            horizontal: 24.0,
+                                                            vertical: 30,
+                                                          ),
+                                                          child: SizedBox(
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
+                                                              children: const [
+                                                                Text(
+                                                                  'Loading...',
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: Palette
+                                                                        .white,
+                                                                  ),
                                                                 ),
-                                                              ),
+                                                                SizedBox(
+                                                                  height: 30,
+                                                                  width: 30,
+                                                                  child:
+                                                                      CircularProgressIndicator(
+                                                                    valueColor:
+                                                                        AlwaysStoppedAnimation<
+                                                                            Color>(
+                                                                      Palette
+                                                                          .white,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
                                                             ),
-                                                          ],
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                  ),
-                                                );
-                                                final jsonString =
-                                                    await _storageClient
-                                                        .getJSONFile(
-                                                  fileID: chapter['file'],
-                                                );
+                                                    );
+                                                    final jsonString =
+                                                        await _storageClient
+                                                            .getJSONFile(
+                                                      fileID: chapter['file'],
+                                                    );
 
-                                                Navigator.of(context).pop();
+                                                    Navigator.of(context).pop();
 
-                                                Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        WritingScreen(
-                                                      story: widget.story,
-                                                      isShort: widget.story
-                                                          .data['is_short'],
-                                                      chapter:
-                                                          retrievedChapters[
-                                                              index],
-                                                      jsonString: jsonString,
-                                                      user: widget.user,
-                                                    ),
+                                                    Navigator.of(context).push(
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            WritingScreen(
+                                                          story: widget.story,
+                                                          isShort: widget.story
+                                                              .data['is_short'],
+                                                          chapter:
+                                                              retrievedChapters[
+                                                                  index],
+                                                          jsonString:
+                                                              jsonString,
+                                                          user: widget.user,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                  icon: const Icon(
+                                                    Icons.edit,
+                                                    color: Palette.greyMedium,
                                                   ),
-                                                );
-                                              },
-                                              icon: const Icon(
-                                                Icons.edit,
-                                                color: Palette.greyMedium,
-                                              ),
-                                            )
+                                                )
                                           : const SizedBox(),
                                     ],
                                   ),
@@ -402,36 +429,38 @@ class _ChapterViewScreenState extends State<ChapterViewScreen> {
                       : Container(),
                   const SizedBox(height: 32),
                   widget.user.$id == _storyData['uid']
-                      ? SizedBox(
-                          width: double.maxFinite,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              primary: Palette.greyLight,
-                            ),
-                            onPressed: () async {
-                              Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      ChapterDescriptionScreen(
-                                    story: widget.story,
-                                    isShort: widget.story.data['is_short'],
-                                    chapterNumber:
-                                        widget.story.data['chapters'].length +
+                      ? widget.isPurchased
+                          ? const SizedBox()
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: Palette.greyLight,
+                                ),
+                                onPressed: () async {
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          ChapterDescriptionScreen(
+                                        story: widget.story,
+                                        isShort: widget.story.data['is_short'],
+                                        chapterNumber: widget
+                                                .story.data['chapters'].length +
                                             1,
-                                    user: widget.user,
+                                        user: widget.user,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: const Text(
+                                  'Add Chapter',
+                                  style: TextStyle(
+                                    color: Palette.black,
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                              );
-                            },
-                            child: const Text(
-                              'Add Chapter',
-                              style: TextStyle(
-                                color: Palette.black,
-                                fontWeight: FontWeight.w500,
                               ),
-                            ),
-                          ),
-                        )
+                            )
                       : const SizedBox(),
                 ],
               ),

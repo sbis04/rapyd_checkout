@@ -54,6 +54,13 @@ class _StoryNameScreenState extends State<StoryNameScreen> {
       },
       child: Scaffold(
         backgroundColor: Colors.white,
+        appBar: AppBar(
+          backgroundColor: Palette.white,
+          iconTheme: const IconThemeData(
+            color: Palette.black,
+          ),
+          elevation: 0,
+        ),
         body: SafeArea(
           child: Form(
             key: _nameFormKey,
@@ -75,6 +82,7 @@ class _StoryNameScreenState extends State<StoryNameScreen> {
                     ),
                     textInputAction: TextInputAction.done,
                     keyboardType: TextInputType.name,
+                    textCapitalization: TextCapitalization.words,
                     cursorColor: Palette.greyMedium,
                     decoration: InputDecoration(
                       border: const UnderlineInputBorder(),

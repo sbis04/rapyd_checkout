@@ -10,6 +10,7 @@ import 'package:slibro/application/res/appwrite_const.dart';
 import 'package:slibro/application/res/palette.dart';
 import 'package:slibro/main.dart';
 import 'package:slibro/presentation/screens/login_screen.dart';
+import 'package:slibro/presentation/screens/main_views/cart_view.dart';
 import 'package:slibro/presentation/screens/main_views/my_profile.dart';
 import 'package:slibro/presentation/screens/story_writing/story_length.dart';
 
@@ -69,34 +70,42 @@ class _DashboardPageState extends State<DashboardPage> {
                 ? MyStoryView(
                     user: widget.user,
                   )
-                : MyProfileView(
-                    user: widget.user,
-                  ),
+                : _selectedIndex == 2
+                    ? CartView(
+                        user: widget.user,
+                      )
+                    : MyProfileView(
+                        user: widget.user,
+                      ),
       ),
-      floatingActionButtonLocation: _selectedIndex != 2
+      floatingActionButtonLocation: _selectedIndex != 3
           ? FloatingActionButtonLocation.endFloat
           : FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: _selectedIndex != 2
-          ? FloatingActionButton(
-              onPressed: () async {
-                await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => StoryLengthScreen(user: widget.user),
+      floatingActionButton: _selectedIndex != 3
+          ? _selectedIndex == 2
+              // TODO: Add what FAB should be shown in cart screen
+              ? const SizedBox()
+              : FloatingActionButton(
+                  onPressed: () async {
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            StoryLengthScreen(user: widget.user),
+                      ),
+                    );
+                    SystemChrome.setSystemUIOverlayStyle(
+                      const SystemUiOverlayStyle(
+                        statusBarColor: Colors.transparent,
+                        statusBarIconBrightness: Brightness.dark,
+                      ),
+                    );
+                  },
+                  child: const Icon(
+                    Icons.add,
+                    size: 30,
                   ),
-                );
-                SystemChrome.setSystemUIOverlayStyle(
-                  const SystemUiOverlayStyle(
-                    statusBarColor: Colors.transparent,
-                    statusBarIconBrightness: Brightness.dark,
-                  ),
-                );
-              },
-              child: const Icon(
-                Icons.add,
-                size: 30,
-              ),
-              backgroundColor: Palette.black,
-            )
+                  backgroundColor: Palette.black,
+                )
           : FloatingActionButton.extended(
               onPressed: () async {
                 Account account = Account(client);
@@ -156,6 +165,10 @@ class _DashboardPageState extends State<DashboardPage> {
                 GButton(
                   icon: Icons.book_rounded,
                   text: 'My Stories',
+                ),
+                GButton(
+                  icon: Icons.shopping_cart,
+                  text: 'Cart',
                 ),
                 GButton(
                   icon: Icons.person,
