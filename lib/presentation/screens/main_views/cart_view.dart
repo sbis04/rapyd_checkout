@@ -517,6 +517,10 @@ class _PayBarState extends State<PayBar> {
                         final prefs = await account.getPrefs();
                         final String customerId = prefs.data['customer_id'];
 
+                        final currentTime =
+                            DateTime.now().millisecondsSinceEpoch;
+                        final orderNumber = 'SLI$currentTime';
+
                         final checkout = await _rapydClient.createCheckout(
                           amount: widget._totalPrice,
                           currency: 'USD',
@@ -524,6 +528,7 @@ class _PayBarState extends State<PayBar> {
                           customerId: customerId,
                           // completePaymentURL: 'http://example.com/complete',
                           // errorPaymentURL: 'http://example.com/error',
+                          orderNumber: orderNumber,
                           merchantReferenceId:
                               '$customerId-${DateTime.now().millisecondsSinceEpoch}',
                           useCardholdersPreferredCurrency: true,
