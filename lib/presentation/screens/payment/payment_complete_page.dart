@@ -1,13 +1,22 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rive/rive.dart';
+import 'package:slibro/application/models/checkout.dart';
+import 'package:slibro/application/models/payment_status.dart';
 import 'package:slibro/application/res/palette.dart';
 import 'package:slibro/main.dart';
 import 'package:slibro/utils/database.dart';
+import 'package:slibro/utils/invoice_generator.dart';
+import 'package:slibro/utils/rapyd_client.dart';
+import 'package:slibro/utils/sendgrid_client.dart';
 
 class PaymentCompletePage extends StatefulWidget {
   const PaymentCompletePage({
@@ -15,11 +24,13 @@ class PaymentCompletePage extends StatefulWidget {
     required this.paymentStatus,
     required this.user,
     required this.stories,
+    required this.checkoutId,
   }) : super(key: key);
 
   final String paymentStatus;
   final User user;
   final List<Document> stories;
+  final String checkoutId;
 
   @override
   State<PaymentCompletePage> createState() => _PaymentCompletePageState();
@@ -27,6 +38,8 @@ class PaymentCompletePage extends StatefulWidget {
 
 class _PaymentCompletePageState extends State<PaymentCompletePage> {
   final DatabaseClient _databaseClient = DatabaseClient();
+  final RapydClient _rapydClient = RapydClient();
+  final SendGridClient _sendGridClient = SendGridClient();
 
   /// Tracks if the animation is playing by whether controller is running.
   bool get isPlaying => _controller?.isActive ?? false;
@@ -38,8 +51,31 @@ class _PaymentCompletePageState extends State<PaymentCompletePage> {
   StateMachineController? _controller;
   SMIInput<bool>? _checkTrigger;
   SMIInput<bool>? _errorTrigger;
+  PaymentData? paymentInfo;
+
+  Timer? _timer;
+  int _start = 10;
+  Uint8List? pdfBytes;
 
   late final String _paymentStatus;
+  List<Product> _products = [];
+
+  void startTimer() {
+    const oneSec = Duration(seconds: 1);
+    _timer = Timer.periodic(
+      oneSec,
+      (Timer timer) {
+        if (_start == 0) {
+          timer.cancel();
+          Navigator.of(context).pop();
+        } else {
+          setState(() {
+            _start--;
+          });
+        }
+      },
+    );
+  }
 
   Future<void> addToPurchased() async {
     Account account = Account(client);
@@ -76,6 +112,9 @@ class _PaymentCompletePageState extends State<PaymentCompletePage> {
       List<String> chapters =
           List<String>.from(widget.stories[i].data['chapters']);
       String imageId = widget.stories[i].data['cover'];
+      double price = widget.stories[i].data['price'];
+
+      _products.add(Product(title, price, 1));
 
       await _databaseClient.addStoryToPublished(
         user: widget.user,
@@ -89,14 +128,41 @@ class _PaymentCompletePageState extends State<PaymentCompletePage> {
     }
   }
 
+  retrieveCheckout() async {
+    final paymentStatus = await _rapydClient.retrieveCheckout(
+      checkoutId: widget.checkoutId,
+    );
+
+    if (paymentStatus != null) {
+      log('CHECKOUT ID: ${paymentStatus.data.id}');
+      setState(() {
+        paymentInfo = paymentStatus.data.payment;
+      });
+
+      pdfBytes = await generateInvoice(
+        invoiceNumber: paymentInfo!.metadata.salesOrder,
+        taxFraction: 0.12,
+        products: _products,
+        paymentData: paymentInfo!,
+      );
+
+      startTimer();
+
+      if (pdfBytes != null) {
+        String pdfString = base64Encode(pdfBytes!);
+
+        _sendGridClient.sendEmail2(
+          fileContent: pdfString,
+          fileName: paymentInfo!.metadata.salesOrder,
+          toEmail: widget.user.email,
+        );
+      }
+    }
+  }
+
   @override
   void initState() {
     _paymentStatus = widget.paymentStatus;
-    // if (paymentStatus == 'success') {
-    //   _controller = SimpleAnimation('Check');
-    // } else {
-    //   _controller = SimpleAnimation('Err');
-    // }
 
     rootBundle.load('assets/rive/check_error.riv').then(
       (data) async {
@@ -114,24 +180,25 @@ class _PaymentCompletePageState extends State<PaymentCompletePage> {
           _errorTrigger = controller.findInput('Error');
         }
         setState(() => _riveArtboard = artboard);
-        // await Future.delayed(const Duration(seconds: 1));
+
         await addToPurchased();
+        await retrieveCheckout();
 
         if (_paymentStatus == 'success') {
           _checkTrigger?.value = true;
         } else {
           _errorTrigger?.value = true;
         }
-
-        await Future.delayed(
-          const Duration(seconds: 3),
-        );
-
-        Navigator.of(context).pop();
       },
     );
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   /// Do something when the state machine changes state
@@ -170,6 +237,68 @@ class _PaymentCompletePageState extends State<PaymentCompletePage> {
                       color: Palette.black,
                       fontWeight: FontWeight.w500,
                     ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 32),
+                    child: paymentInfo != null
+                        ? InkWell(
+                            onTap: () async {
+                              _timer?.cancel();
+
+                              await FileSaver.instance.saveAs(
+                                paymentInfo!.metadata.salesOrder,
+                                pdfBytes!,
+                                'pdf',
+                                MimeType.PDF,
+                              );
+
+                              Navigator.of(context).pop();
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.greenAccent,
+                                border: Border.all(
+                                  color: Palette.blackLight,
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 8,
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      'Invoice ${paymentInfo!.metadata.salesOrder}',
+                                    ),
+                                    const SizedBox(width: 16),
+                                    Container(
+                                      height: 30,
+                                      width: 2,
+                                      color: Palette.black,
+                                    ),
+                                    const SizedBox(width: 16),
+                                    const Icon(Icons.download),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )
+                        : const SizedBox(height: 50),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: paymentInfo != null
+                        ? Text(
+                            'Redirecting in $_start seconds',
+                            style: const TextStyle(
+                              color: Palette.greyDark,
+                            ),
+                          )
+                        : const SizedBox(),
                   ),
                 ],
               ),
