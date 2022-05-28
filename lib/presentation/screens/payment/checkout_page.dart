@@ -71,6 +71,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   MaterialPageRoute(
                     builder: (context) => PaymentCompletePage(
                       paymentStatus: message.message,
+                      checkoutId: widget.checkoutId,
                       user: widget.user,
                       stories: widget.stories,
                     ),
