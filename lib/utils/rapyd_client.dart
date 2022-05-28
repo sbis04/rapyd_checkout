@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:convert/convert.dart';
 import 'package:http/http.dart' as http;
 import 'package:crypto/crypto.dart';
+import 'package:slibro/application/models/payment_status.dart';
 
 import '../application/models/card_payment.dart';
 import '../application/models/checkout.dart';
@@ -61,6 +62,7 @@ class RapydClient {
     required String currency,
     required String countryCode,
     required String customerId,
+    required String orderNumber,
     String? completePaymentURL,
     String? errorPaymentURL,
     String? merchantReferenceId,
@@ -86,6 +88,7 @@ class RapydClient {
       "language": languageCode,
       "metadata": {
         "merchant_defined": true,
+        "sales_order": orderNumber,
       },
       "payment_method_types_include": paymentMethods,
       "customer": customerId,
@@ -118,6 +121,37 @@ class RapydClient {
     }
 
     return checkoutDetails;
+  }
+
+  Future<PaymentStatus?> retrieveCheckout({required String checkoutId}) async {
+    PaymentStatus? paymentStatus;
+
+    var method = "get";
+    var checkoutEndpoint = '/v1/checkout/$checkoutId';
+
+    final checkoutURL = Uri.parse(_baseURL + checkoutEndpoint);
+
+    final headers = _generateHeader(
+      method: method,
+      endpoint: checkoutEndpoint,
+    );
+
+    try {
+      var response = await http.get(checkoutURL, headers: headers);
+
+      print(response.body);
+
+      if (response.statusCode == 200) {
+        print('Checkout retrieved successfully!');
+        paymentStatus = PaymentStatus.fromJson(jsonDecode(response.body));
+      } else {
+        print(response.statusCode);
+      }
+    } catch (_) {
+      print('Failed to retrieve checkout');
+    }
+
+    return paymentStatus;
   }
 
   Future<Customer?> createNewCustomer({
