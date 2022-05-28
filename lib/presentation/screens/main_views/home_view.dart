@@ -57,12 +57,75 @@ class _HomeViewState extends State<HomeView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Stories',
-            style: TextStyle(
-              color: Palette.black,
-              fontSize: 36.0,
-              fontWeight: FontWeight.w500,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const Text(
+                'Stories',
+                style: TextStyle(
+                  color: Palette.black,
+                  fontSize: 36.0,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const Spacer(),
+              Visibility(
+                visible: false,
+                child: Image.asset(
+                  'assets/crown_icon.png',
+                  color: Palette.goldDark,
+                  height: 40,
+                  width: 40,
+                ),
+              ),
+            ],
+          ),
+          // TODO: For use when subscription plans are available
+          Visibility(
+            visible: false,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 16.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  // color: Palette.gold.withOpacity(0.5),
+                  color: Palette.black,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                width: double.maxFinite,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    children: [
+                      Image.asset(
+                        'assets/crown_icon.png',
+                        color: Palette.gold,
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            Text(
+                              'BUY PREMIUM MEMBERSHIP',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Palette.gold,
+                              ),
+                            ),
+                            Text(
+                              'This membership gives you the ultimate access to the library of books',
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: Palette.goldDark,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 24),
