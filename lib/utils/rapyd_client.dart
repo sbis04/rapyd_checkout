@@ -107,9 +107,6 @@ class RapydClient {
         body: data,
       );
 
-      // FOR TESTING >>
-      // print(response.body);
-
       if (response.statusCode == 200) {
         print('SUCCESSFULLY CHECKOUT');
         checkoutDetails = Checkout.fromJson(jsonDecode(response.body));
