@@ -1,12 +1,10 @@
 # Slibro [![Codemagic build status](https://api.codemagic.io/apps/6240c24a66f743ede7aca591/android-workflow/status_badge.svg)](https://codemagic.io/apps/6240c24a66f743ede7aca591/android-workflow/latest_build)
 
-![](screenshots/slibro-dev-cover.png)
+![](screenshots/slibro-rapyd-cover.png)
 
-**Slibro** is a story writing platform that supports short and long format stories. [Flutter](https://flutter.dev/) and [Appwrite](https://appwrite.io/) is used to create this amazing cross-platform experience.
+**Slibro** is a full-fledged story writing and publishing platform that supports short and long format stories. [Flutter](https://flutter.dev/), [Appwrite](https://appwrite.io/), and [Rapyd](https://www.rapyd.net/)  is used to create this amazing cross-platform experience. Though I have focused mainly on the mobile side for building the UI and made sure it's a nice to use on small sized devices.
 
-> Try out the app on Android from [here](https://appdistribution.firebase.dev/i/3fc14b5839069d3c).
-
-![](screenshots/slibro-cross-platform-2.png)
+> Try out the app on Android from [here](https://appdistribution.firebase.dev/i/49e1c8034f8a2ab9).
 
 ## Usage
 
@@ -15,7 +13,7 @@ To run this from your system, you should have:
 1. [Flutter SDK](https://docs.flutter.dev/get-started/install) installed and configured on your system.
 2. Setup Appwrite using Docker.
 3. Host the server locally using [ngrok](https://ngrok.com/).
-4. Under `lib` directory, create a `secret.dart` file, and add the server URL and Appwrite project ID to it. Example:
+4. Under `lib` directory, create a `secrets.dart` file, and add the server URL and Appwrite project ID to it. Example:
 
     ```dart
     class Secrets {
@@ -23,7 +21,10 @@ To run this from your system, you should have:
       static String projectID = '6276341092e81e829ab0';
     }
     ```
-5. Run using the following command:
+5. Create a Rapyd developer account.
+6. Get the Rapyd Sandbox API key and secret.
+7. Add them to the `secrets.dart` file and use them inside the Rapyd Flutter SDK.
+8. Run using the following command:
 
    ```sh
    flutter run
@@ -35,25 +36,45 @@ The app now has full-fledged **story editor** (rich text - markdown), **story re
 
 Some glimpses of Slibro's user interface are as follows:
 
-![Slibro Auth Screens](screenshots/slibro-auth-screens.png)
+![Slibro Auth Screens](screenshots/sr-1.png)
 
 The above four screens cover the authentication flow on the app using email/password method. These screens help a user to either create a new account or login using an existing account. Once a user signs up to the app, it navigates to the story creation flow.
+
+On a successful registration, a new user is created on Appwrite and a corresponding customer is created on Rapyd.
  
-![Slibro Story Detail Screens](screenshots/slibro-screens-2.png)
+![Slibro Story Detail Screens](screenshots/sr-2.png)
 
-These screens help a user to create the first story as a draft in the Slibro app. The user can also publish the story if wanted.
+Once authenticated, there are two options - either start writing a new story right away, or navigate to the dashboard of the app.
 
-![Slibro Editor and Reader Screens](screenshots/slibro-screens-3.1.png)
+If the user selects "Start Writing" - the next two screens help a user to create the first story as a draft in the Slibro app. The user can also publish the story following the flow.
 
-The editor and the reader screens are the most important ones, the editor also has rich text support using Markdown.
+![Slibro Editor and Reader Screens](screenshots/sr-3.png)
 
-![Slibro Dashboard Screens](screenshots/slibro-screens-4.png)
+The app consists of four main screens:
 
-The three screens (Home, My Stories, and My Profile) shown above are part of the dashboard of the app, user can navigate to any of these using the Navigation bar accessible from these pages.
+* **Home Page:** Displays the list of all published stories inside the Slibro app.
 
-Navigation bar has a subtle animation to improve the UX of the app:
+* **My Stories Page:** It has two sections, the first section displays your purchased stories (if any), and the next section displays the stories that you have written (if any).
 
-![Navigation bar animation](screenshots/navbar-anim.gif)
+* **Cart Page:** Displays the list of stories that you have specifically added to the cart for purchasing. You can proceed with the checkout from this page.
+
+* **Profile:** Let's you view your profile information along with an options to edit your information. You will also find the log out button on this page.
+
+![Slibro Dashboard Screens](screenshots/sr-4.png)
+
+The following pages shows if the users tries to checkout the cart items. It used the Rapyd Checkout Toolkit to open the embedded web view inside the app - there's a 2-way communication set up between Dart and JS.
+
+User's card information and billing information is taken as a part of this process. And, once the payment is successful an invoice is automatically sent to the user's email via SendGrid. There's also an option to download the invoice.
+
+![Slibro Dashboard Screens](screenshots/sr-5.png)
+
+## Rapyd APIs
+
+The following Rapyd APIs are used in this project:
+
+* [Customer API](https://docs.rapyd.net/build-with-rapyd/reference/customer-object): Used for creating and retrieving the customer information - mainly for storing the saved card information.
+
+* [Checkout API](https://docs.rapyd.net/build-with-rapyd/reference/checkout-page-object): Used for generating and retrieving the checkout ID for the products that the user wants to purchase - it's also required while loading the embedded checkout toolkit inside the app.
 
 ## Appwrite APIs
 
@@ -65,8 +86,31 @@ Three of the major Appwrite APIs are used:
 
 ## Flutter packages
 
+A lot of community members for searching for a Flutter SDK to access the Rapyd APIs, so I have started working on a **[Rapyd Flutter SDK](https://pub.dev/packages/rapyd)**. The package is in very early stage of development and has limited APIs to interact with, but has some of the major functionality like calculation of the salt and signature for the header that is required for performing a valid API call.
+
+This SDK should make the Rapyd API calls really easy to perform. Here's a small example of how a new customer can be created using the SDK:
+
+```dart
+// Initializing
+final rapydClient = RapydClient('<access_key>', '<secret_key>');
+
+try {
+  // Creating a new customer
+  final customer = await rapydClient.createNewCustomer(
+    email: 'example@name.com',
+    name: 'User',
+  );
+  print('Created customer successfully, ID: ${customer.data.id}');
+} catch (e) {
+  print('ERROR: ${e.toString()}');
+}
+```
+
+> This project used the Rapyd Flutter SDK for perform the API Calls!
+
 The following Flutter packages are used to build this app:
 
+* [rapyd](https://pub.dev/packages/rapyd)
 * [appwrite](https://pub.dev/packages/appwrite)
 * [flutter_quill](https://pub.dev/packages/flutter_quill)
 * [path_provider](https://pub.dev/packages/path_provider)
