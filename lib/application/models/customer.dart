@@ -1,118 +1,127 @@
-// To parse this JSON data, do
-//
-//     final customer = customerFromJson(jsonString);
+/**
+ * --------------------------------------------------------------
+ * 
+ * These model classes have been shifted to the Rapyd Flutter SDK
+ * Here's the link to the package: https://pub.dev/packages/rapyd
+ * 
+ * --------------------------------------------------------------
+ */
 
-import 'dart:convert';
+// // To parse this JSON data, do
+// //
+// //     final customer = customerFromJson(jsonString);
 
-class Customer {
-  Customer({
-    required this.status,
-    required this.data,
-  });
+// import 'dart:convert';
 
-  final Status status;
-  final Data data;
+// class Customer {
+//   Customer({
+//     required this.status,
+//     required this.data,
+//   });
 
-  factory Customer.fromRawJson(String str) =>
-      Customer.fromJson(json.decode(str));
+//   final Status status;
+//   final Data data;
 
-  String toRawJson() => json.encode(toJson());
+//   factory Customer.fromRawJson(String str) =>
+//       Customer.fromJson(json.decode(str));
 
-  factory Customer.fromJson(Map<String, dynamic> json) => Customer(
-        status: Status.fromJson(json["status"]),
-        data: Data.fromJson(json["data"]),
-      );
+//   String toRawJson() => json.encode(toJson());
 
-  Map<String, dynamic> toJson() => {
-        "status": status.toJson(),
-        "data": data.toJson(),
-      };
-}
+//   factory Customer.fromJson(Map<String, dynamic> json) => Customer(
+//         status: Status.fromJson(json["status"]),
+//         data: Data.fromJson(json["data"]),
+//       );
 
-class Data {
-  Data({
-    required this.id,
-    required this.name,
-    required this.defaultPaymentMethod,
-    required this.description,
-    required this.email,
-    required this.invoicePrefix,
-    required this.createdAt,
-    required this.businessVatId,
-    required this.ewallet,
-  });
+//   Map<String, dynamic> toJson() => {
+//         "status": status.toJson(),
+//         "data": data.toJson(),
+//       };
+// }
 
-  final String id;
-  final String name;
-  final String? defaultPaymentMethod;
-  final String? description;
-  final String email;
-  final String? invoicePrefix;
-  final int createdAt;
-  final String? businessVatId;
-  final String? ewallet;
+// class Data {
+//   Data({
+//     required this.id,
+//     required this.name,
+//     required this.defaultPaymentMethod,
+//     required this.description,
+//     required this.email,
+//     required this.invoicePrefix,
+//     required this.createdAt,
+//     required this.businessVatId,
+//     required this.ewallet,
+//   });
 
-  factory Data.fromRawJson(String str) => Data.fromJson(json.decode(str));
+//   final String id;
+//   final String name;
+//   final String? defaultPaymentMethod;
+//   final String? description;
+//   final String email;
+//   final String? invoicePrefix;
+//   final int createdAt;
+//   final String? businessVatId;
+//   final String? ewallet;
 
-  String toRawJson() => json.encode(toJson());
+//   factory Data.fromRawJson(String str) => Data.fromJson(json.decode(str));
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
-        id: json["id"],
-        name: json["name"],
-        defaultPaymentMethod: json["default_payment_method"],
-        description: json["description"],
-        email: json["email"],
-        invoicePrefix: json["invoice_prefix"],
-        createdAt: json["created_at"],
-        businessVatId: json["business_vat_id"],
-        ewallet: json["ewallet"],
-      );
+//   String toRawJson() => json.encode(toJson());
 
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "name": name,
-        "default_payment_method": defaultPaymentMethod,
-        "description": description,
-        "email": email,
-        "invoice_prefix": invoicePrefix,
-        "created_at": createdAt,
-        "business_vat_id": businessVatId,
-        "ewallet": ewallet,
-      };
-}
+//   factory Data.fromJson(Map<String, dynamic> json) => Data(
+//         id: json["id"],
+//         name: json["name"],
+//         defaultPaymentMethod: json["default_payment_method"],
+//         description: json["description"],
+//         email: json["email"],
+//         invoicePrefix: json["invoice_prefix"],
+//         createdAt: json["created_at"],
+//         businessVatId: json["business_vat_id"],
+//         ewallet: json["ewallet"],
+//       );
 
-class Status {
-  Status({
-    required this.errorCode,
-    required this.status,
-    required this.message,
-    required this.responseCode,
-    required this.operationId,
-  });
+//   Map<String, dynamic> toJson() => {
+//         "id": id,
+//         "name": name,
+//         "default_payment_method": defaultPaymentMethod,
+//         "description": description,
+//         "email": email,
+//         "invoice_prefix": invoicePrefix,
+//         "created_at": createdAt,
+//         "business_vat_id": businessVatId,
+//         "ewallet": ewallet,
+//       };
+// }
 
-  final String? errorCode;
-  final String status;
-  final String? message;
-  final String? responseCode;
-  final String operationId;
+// class Status {
+//   Status({
+//     required this.errorCode,
+//     required this.status,
+//     required this.message,
+//     required this.responseCode,
+//     required this.operationId,
+//   });
 
-  factory Status.fromRawJson(String str) => Status.fromJson(json.decode(str));
+//   final String? errorCode;
+//   final String status;
+//   final String? message;
+//   final String? responseCode;
+//   final String operationId;
 
-  String toRawJson() => json.encode(toJson());
+//   factory Status.fromRawJson(String str) => Status.fromJson(json.decode(str));
 
-  factory Status.fromJson(Map<String, dynamic> json) => Status(
-        errorCode: json["error_code"],
-        status: json["status"],
-        message: json["message"],
-        responseCode: json["response_code"],
-        operationId: json["operation_id"],
-      );
+//   String toRawJson() => json.encode(toJson());
 
-  Map<String, dynamic> toJson() => {
-        "error_code": errorCode,
-        "status": status,
-        "message": message,
-        "response_code": responseCode,
-        "operation_id": operationId,
-      };
-}
+//   factory Status.fromJson(Map<String, dynamic> json) => Status(
+//         errorCode: json["error_code"],
+//         status: json["status"],
+//         message: json["message"],
+//         responseCode: json["response_code"],
+//         operationId: json["operation_id"],
+//       );
+
+//   Map<String, dynamic> toJson() => {
+//         "error_code": errorCode,
+//         "status": status,
+//         "message": message,
+//         "response_code": responseCode,
+//         "operation_id": operationId,
+//       };
+// }

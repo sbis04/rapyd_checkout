@@ -8,6 +8,7 @@ import 'package:appwrite/models.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:rapyd/models/models.dart';
 import 'package:rive/rive.dart';
 import 'package:slibro/application/models/checkout.dart';
 import 'package:slibro/application/models/payment_status.dart';
@@ -38,7 +39,7 @@ class PaymentCompletePage extends StatefulWidget {
 
 class _PaymentCompletePageState extends State<PaymentCompletePage> {
   final DatabaseClient _databaseClient = DatabaseClient();
-  final RapydClient _rapydClient = RapydClient();
+  // final RapydClient _rapydClient = RapydClient();
   final SendGridClient _sendGridClient = SendGridClient();
 
   /// Tracks if the animation is playing by whether controller is running.
@@ -57,7 +58,7 @@ class _PaymentCompletePageState extends State<PaymentCompletePage> {
   int _start = 10;
   Uint8List? pdfBytes;
 
-  late final String _paymentStatus;
+  String? _paymentStatus;
   List<Product> _products = [];
 
   void startTimer() {
@@ -129,15 +130,23 @@ class _PaymentCompletePageState extends State<PaymentCompletePage> {
   }
 
   retrieveCheckout() async {
-    final paymentStatus = await _rapydClient.retrieveCheckout(
-      checkoutId: widget.checkoutId,
-    );
+    PaymentStatus? paymentStatus;
+
+    try {
+      paymentStatus = await rapydClient.retrieveCheckout(
+        checkoutId: widget.checkoutId,
+      );
+    } catch (e) {
+      log(e.toString());
+    }
 
     if (paymentStatus != null) {
       log('CHECKOUT ID: ${paymentStatus.data.id}');
       setState(() {
-        paymentInfo = paymentStatus.data.payment;
+        paymentInfo = paymentStatus!.data.payment;
       });
+
+      await addToPurchased();
 
       pdfBytes = await generateInvoice(
         invoiceNumber: paymentInfo!.metadata.salesOrder,
@@ -157,12 +166,18 @@ class _PaymentCompletePageState extends State<PaymentCompletePage> {
           toEmail: widget.user.email,
         );
       }
+    } else {
+      setState(() {
+        _paymentStatus = 'failed';
+      });
     }
   }
 
   @override
   void initState() {
     _paymentStatus = widget.paymentStatus;
+
+    log('PAYMENT STATUS: $_paymentStatus');
 
     rootBundle.load('assets/rive/check_error.riv').then(
       (data) async {
@@ -174,20 +189,28 @@ class _PaymentCompletePageState extends State<PaymentCompletePage> {
           'State Machine 1',
           onStateChange: _onStateChange,
         );
+
         if (controller != null) {
           artboard.addController(controller);
           _checkTrigger = controller.findInput('Check');
           _errorTrigger = controller.findInput('Error');
         }
+
         setState(() => _riveArtboard = artboard);
 
-        await addToPurchased();
         await retrieveCheckout();
 
         if (_paymentStatus == 'success') {
           _checkTrigger?.value = true;
+          setState(() {});
+          log('inside success');
         } else {
+          await Future.delayed(const Duration(seconds: 1));
           _errorTrigger?.value = true;
+          setState(() {});
+          await Future.delayed(const Duration(seconds: 3));
+          Navigator.of(context).pop();
+          log('inside failed');
         }
       },
     );

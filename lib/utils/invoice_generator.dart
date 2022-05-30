@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
-import 'package:slibro/application/models/payment_status.dart';
+import 'package:rapyd/models/models.dart';
 
 Future<Uint8List> generateInvoice({
   required String invoiceNumber,

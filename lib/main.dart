@@ -1,5 +1,6 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:flutter/material.dart';
+import 'package:rapyd/rapyd.dart';
 import 'package:slibro/application/res/palette.dart';
 import 'package:slibro/presentation/screens/splash_screen.dart';
 import 'package:slibro/secrets.dart';
@@ -7,6 +8,10 @@ import 'package:slibro/secrets.dart';
 import 'application/res/strings.dart';
 
 Client client = Client();
+RapydClient rapydClient = RapydClient(
+  Secrets.rapydAccessKey,
+  Secrets.rapydSecretKey,
+);
 
 void main() {
   runApp(const MyApp());

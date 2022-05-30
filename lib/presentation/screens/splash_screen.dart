@@ -112,6 +112,23 @@ class _SplashScreenState extends State<SplashScreen> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 8.0),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        'and ',
+                        style: TextStyle(
+                          color: Palette.greyDark,
+                          fontSize: 14.0,
+                        ),
+                      ),
+                      Image.asset(
+                        'assets/rapyd_logo.png',
+                        width: 60,
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),

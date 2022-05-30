@@ -1,130 +1,139 @@
-// To parse this JSON data, do
-//
-//     final cardPayment = cardPaymentFromJson(jsonString);
+/**
+ * --------------------------------------------------------------
+ * 
+ * These model classes have been shifted to the Rapyd Flutter SDK
+ * Here's the link to the package: https://pub.dev/packages/rapyd
+ * 
+ * --------------------------------------------------------------
+ */
 
-import 'dart:convert';
+// // To parse this JSON data, do
+// //
+// //     final cardPayment = cardPaymentFromJson(jsonString);
 
-class CardPayment {
-  CardPayment({
-    required this.status,
-    required this.data,
-  });
+// import 'dart:convert';
 
-  final Status status;
-  final Data data;
+// class CardPayment {
+//   CardPayment({
+//     required this.status,
+//     required this.data,
+//   });
 
-  factory CardPayment.fromRawJson(String str) =>
-      CardPayment.fromJson(json.decode(str));
+//   final Status status;
+//   final Data data;
 
-  String toRawJson() => json.encode(toJson());
+//   factory CardPayment.fromRawJson(String str) =>
+//       CardPayment.fromJson(json.decode(str));
 
-  factory CardPayment.fromJson(Map<String, dynamic> json) => CardPayment(
-        status: Status.fromJson(json["status"]),
-        data: Data.fromJson(json["data"]),
-      );
+//   String toRawJson() => json.encode(toJson());
 
-  Map<String, dynamic> toJson() => {
-        "status": status.toJson(),
-        "data": data.toJson(),
-      };
-}
+//   factory CardPayment.fromJson(Map<String, dynamic> json) => CardPayment(
+//         status: Status.fromJson(json["status"]),
+//         data: Data.fromJson(json["data"]),
+//       );
 
-class Data {
-  Data({
-    required this.id,
-    required this.type,
-    required this.category,
-    required this.nextAction,
-    required this.name,
-    required this.last4,
-    required this.acsCheck,
-    required this.cvvCheck,
-    required this.expirationYear,
-    required this.expirationMonth,
-    required this.fingerprintToken,
-    required this.redirectUrl,
-  });
+//   Map<String, dynamic> toJson() => {
+//         "status": status.toJson(),
+//         "data": data.toJson(),
+//       };
+// }
 
-  final String id;
-  final String type;
-  final String category;
-  final String? nextAction;
-  final String name;
-  final String last4;
-  final String? acsCheck;
-  final String? cvvCheck;
-  final String expirationYear;
-  final String expirationMonth;
-  final String? fingerprintToken;
-  final String? redirectUrl;
+// class Data {
+//   Data({
+//     required this.id,
+//     required this.type,
+//     required this.category,
+//     required this.nextAction,
+//     required this.name,
+//     required this.last4,
+//     required this.acsCheck,
+//     required this.cvvCheck,
+//     required this.expirationYear,
+//     required this.expirationMonth,
+//     required this.fingerprintToken,
+//     required this.redirectUrl,
+//   });
 
-  factory Data.fromRawJson(String str) => Data.fromJson(json.decode(str));
+//   final String id;
+//   final String type;
+//   final String category;
+//   final String? nextAction;
+//   final String name;
+//   final String last4;
+//   final String? acsCheck;
+//   final String? cvvCheck;
+//   final String expirationYear;
+//   final String expirationMonth;
+//   final String? fingerprintToken;
+//   final String? redirectUrl;
 
-  String toRawJson() => json.encode(toJson());
+//   factory Data.fromRawJson(String str) => Data.fromJson(json.decode(str));
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
-        id: json["id"],
-        type: json["type"],
-        category: json["category"],
-        nextAction: json["next_action"],
-        name: json["name"],
-        last4: json["last4"],
-        acsCheck: json["acs_check"],
-        cvvCheck: json["cvv_check"],
-        expirationYear: json["expiration_year"],
-        expirationMonth: json["expiration_month"],
-        fingerprintToken: json["fingerprint_token"],
-        redirectUrl: json["redirect_url"],
-      );
+//   String toRawJson() => json.encode(toJson());
 
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "type": type,
-        "category": category,
-        "next_action": nextAction,
-        "name": name,
-        "last4": last4,
-        "acs_check": acsCheck,
-        "cvv_check": cvvCheck,
-        "expiration_year": expirationYear,
-        "expiration_month": expirationMonth,
-        "fingerprint_token": fingerprintToken,
-        "redirect_url": redirectUrl,
-      };
-}
+//   factory Data.fromJson(Map<String, dynamic> json) => Data(
+//         id: json["id"],
+//         type: json["type"],
+//         category: json["category"],
+//         nextAction: json["next_action"],
+//         name: json["name"],
+//         last4: json["last4"],
+//         acsCheck: json["acs_check"],
+//         cvvCheck: json["cvv_check"],
+//         expirationYear: json["expiration_year"],
+//         expirationMonth: json["expiration_month"],
+//         fingerprintToken: json["fingerprint_token"],
+//         redirectUrl: json["redirect_url"],
+//       );
 
-class Status {
-  Status({
-    required this.errorCode,
-    required this.status,
-    required this.message,
-    required this.responseCode,
-    required this.operationId,
-  });
+//   Map<String, dynamic> toJson() => {
+//         "id": id,
+//         "type": type,
+//         "category": category,
+//         "next_action": nextAction,
+//         "name": name,
+//         "last4": last4,
+//         "acs_check": acsCheck,
+//         "cvv_check": cvvCheck,
+//         "expiration_year": expirationYear,
+//         "expiration_month": expirationMonth,
+//         "fingerprint_token": fingerprintToken,
+//         "redirect_url": redirectUrl,
+//       };
+// }
 
-  final String? errorCode;
-  final String status;
-  final String? message;
-  final String? responseCode;
-  final String operationId;
+// class Status {
+//   Status({
+//     required this.errorCode,
+//     required this.status,
+//     required this.message,
+//     required this.responseCode,
+//     required this.operationId,
+//   });
 
-  factory Status.fromRawJson(String str) => Status.fromJson(json.decode(str));
+//   final String? errorCode;
+//   final String status;
+//   final String? message;
+//   final String? responseCode;
+//   final String operationId;
 
-  String toRawJson() => json.encode(toJson());
+//   factory Status.fromRawJson(String str) => Status.fromJson(json.decode(str));
 
-  factory Status.fromJson(Map<String, dynamic> json) => Status(
-        errorCode: json["error_code"],
-        status: json["status"],
-        message: json["message"],
-        responseCode: json["response_code"],
-        operationId: json["operation_id"],
-      );
+//   String toRawJson() => json.encode(toJson());
 
-  Map<String, dynamic> toJson() => {
-        "error_code": errorCode,
-        "status": status,
-        "message": message,
-        "response_code": responseCode,
-        "operation_id": operationId,
-      };
-}
+//   factory Status.fromJson(Map<String, dynamic> json) => Status(
+//         errorCode: json["error_code"],
+//         status: json["status"],
+//         message: json["message"],
+//         responseCode: json["response_code"],
+//         operationId: json["operation_id"],
+//       );
+
+//   Map<String, dynamic> toJson() => {
+//         "error_code": errorCode,
+//         "status": status,
+//         "message": message,
+//         "response_code": responseCode,
+//         "operation_id": operationId,
+//       };
+// }

@@ -24,7 +24,7 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final _registerFormKey = GlobalKey<FormState>();
 
-  late final RapydClient _rapydClient;
+  // late final RapydClient _rapydClient;
 
   late final TextEditingController _userNameTextController;
   late final TextEditingController _emailTextController;
@@ -41,7 +41,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   void initState() {
     super.initState();
-    _rapydClient = RapydClient();
 
     _userNameTextController = TextEditingController();
     _emailTextController = TextEditingController();
@@ -287,7 +286,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         });
 
                         // Creating a new Rapyd customer
-                        final customer = await _rapydClient.createNewCustomer(
+                        final customer = await rapydClient.createNewCustomer(
                           email: _emailTextController.text,
                           name: _userNameTextController.text,
                         );

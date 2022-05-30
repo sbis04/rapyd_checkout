@@ -293,7 +293,7 @@ class PayBar extends StatefulWidget {
 }
 
 class _PayBarState extends State<PayBar> {
-  final RapydClient _rapydClient = RapydClient();
+  // final RapydClient _rapydClient = RapydClient();
 
   bool _isShowMoreTapped = false;
   bool _isProcessing = false;
@@ -521,7 +521,7 @@ class _PayBarState extends State<PayBar> {
                             DateTime.now().millisecondsSinceEpoch;
                         final orderNumber = 'SLI$currentTime';
 
-                        final checkout = await _rapydClient.createCheckout(
+                        final checkout = await rapydClient.createCheckout(
                           amount: widget._totalPrice,
                           currency: 'USD',
                           countryCode: 'US',
