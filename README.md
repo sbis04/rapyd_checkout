@@ -30,7 +30,7 @@ To run this from your system, you should have:
    flutter run
    ```
 
-> ** The Dart code of the Flutter app is present inside the `lib` directory (in case your want to check out or review the code).
+> ** The Dart code of the Flutter app is present inside the `lib` directory (in case you want to check out or review the code).
 
 ## App Overview
 
