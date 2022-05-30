@@ -30,6 +30,8 @@ To run this from your system, you should have:
    flutter run
    ```
 
+> ** The Dart code of the Flutter app is present inside the `lib` directory (in case your want to check out or review the code).
+
 ## App Overview
 
 The app now has full-fledged **story editor** (rich text - markdown), **story reader**, and **story management system** (to manage published/unpublished stories and explore other publisher's stories).
