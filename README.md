@@ -73,6 +73,16 @@ The following Flutter packages are used to build this app:
 * [shared_preferences](https://pub.dev/packages/shared_preferences)
 * [google_nav_bar](https://pub.dev/packages/google_nav_bar)
 * [tuple](https://pub.dev/packages/tuple)
+* [image_cropper](https://pub.dev/packages/image_cropper)
+* [image_picker](https://pub.dev/packages/image_picker)
+* [http](https://pub.dev/packages/http)
+* [convert](https://pub.dev/packages/convert)
+* [crypto](https://pub.dev/packages/crypto)
+* [webview_flutter_plus](https://pub.dev/packages/webview_flutter_plus)
+* [rive](https://pub.dev/packages/rive)
+* [printing](https://pub.dev/packages/printing)
+* [file_saver](https://pub.dev/packages/file_saver)
+* [sendgrid_mailer](https://pub.dev/packages/sendgrid_mailer)
 
 ## License
 
