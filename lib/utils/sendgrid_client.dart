@@ -11,7 +11,7 @@ class SendGridClient {
   }) {
     final mailer = Mailer(Secrets.sendGridApiKey);
     final toAddress = Address(toEmail);
-    final fromAddress = Address('sbis1999@gmail.com');
+    final fromAddress = Address(Secrets.sendGridFromAddress);
     final content = Content(
       'text/plain',
       'Thank you for the purchase! Find the invoice in the attachment.\n\nOrder ID: $fileName\n\nSlibro',
